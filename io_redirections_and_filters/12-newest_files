@@ -1,2 +1,2 @@
 #!/bin/bash
-ls -lt | head | cut -d ' ' -f10
+ls -1t | head -10
