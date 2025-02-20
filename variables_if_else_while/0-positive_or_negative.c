@@ -2,8 +2,11 @@
 #include <stdlib.h>
 #include <time.h>
 /**
- * print whather the number stored in the variable
+ * main - Entry point
  *
+ * This function prints a string to the standard output.
+ *
+ * Return: Always 0 (Success)
  */
 int main(void)
 {
