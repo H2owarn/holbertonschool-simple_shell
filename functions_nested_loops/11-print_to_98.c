@@ -1,8 +1,6 @@
 #include "main.h"
 #include <stdio.h>
 /**
- * print_to_98  - pritn to 98
- *
  * print_number - Prints the negative sign and converts the number to positive.
  * @n : number
  *
@@ -21,6 +19,12 @@ print_number(n / 10);
 }
 _putchar((n % 10) + '0');
 }
+/**
+ * print_to_98 - print to number 98
+ * @n : number
+ *
+ * Return: ...
+ */
 void print_to_98(int n)
 {
 if (n <= 98)
