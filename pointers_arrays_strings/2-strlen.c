@@ -3,9 +3,8 @@
 /**
  * _strlen - returns the length of a string.
  * @s: Pointer to an integer that will be updated.
- * 
  *
- * Description: This function returns the length of a string.
+ * Return: len
  */
 int _strlen(char *s)
 {
@@ -14,5 +13,5 @@ while (s[len] != '\0')
 {
 len = len + 1;
 }
-return len;
+return (len);
 }
