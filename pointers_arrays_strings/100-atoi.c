@@ -7,25 +7,27 @@
  */
 int _atoi(char *s)
 {
-int sign = 1;
-int result = 0;
-int started = 0;
-while (*s)
-{
-if (*s == '-' && !started)
-{
-sign = -sign;
-}
-else if (*s >= '0' && *s <= '9')
-{
-started = 1;
-result = result * 10 + (*s - '0');
-}
-else if (started)
-{
-break;
-}
-s = s + 1;
-}
-return (result *sign);
+	short boolean;
+	int i, minus, result;
+
+	i = minus = result = boolean = 0;
+	minus = -1;
+
+	while (s[i] != '\0')
+	{
+		if (s[i] == '-')
+			minus *= -1;
+
+		if (s[i] >= '0' && s[i] <= '9')
+		{
+			result *= 10;
+			result -= (s[i] - '0');
+			boolean = 1;
+		}
+		else if (boolean == 1)
+			break;
+		i++;
+	}
+	result *= minus;
+	return (result);
 }
