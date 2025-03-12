@@ -4,14 +4,15 @@
 /**
  * free_grid - frees a 2 dimensional grid previously
  *
- * @grid: 
- * @height: 
+ * @grid: grid
+ * @height: number
  *
- * Return: 
+ * Return: free
  */
 void free_grid(int **grid, int height)
 {
 	int i;
+
 	for (i = 0; i < height; i = i + 1)
 	{
 		free(grid[i]);
