@@ -1,6 +1,36 @@
 #include "3-calc.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+/**
+ * _putchar - writes a character to stdout
+ * @c: The character to print
+ *
+ * Return: 1 on success, -1 on error
+ */
+int _putchar(char c)
+{
+	return (write(1, &c, 1));
+}
+/**
+ * print_number - prints an integer using _putchar
+ * @n: The integer to print
+ *
+ * Return: Nothing
+ */
+void print_number(int n)
+{
+	if (n < 0)
+	{
+		_putchar('-');
+		n = -n;
+	}
+
+	if (n / 10)
+		print_number(n / 10);
+
+	_putchar((n % 10) + '0');
+}
 /**
  * main- Performs simple operations
  * @argc: Number
@@ -14,7 +44,7 @@ int main(int argc, char *argv[])
 
 	if (argc != 4)
 	{
-		printf("Error\n");
+		write(1, "Error\n", 6);
 		exit(98);
 	}
 	num1 = atoi(argv[1]);
@@ -22,10 +52,11 @@ int main(int argc, char *argv[])
 	operation = get_op_func(argv[2]);
 	if (operation == NULL)
 	{
-		printf("Error\n");
+		write(1, "Error\n", 6);
 		exit(99);
 	}
 	result = operation(num1, num2);
-	printf("%d\n", result);
+	print_number(result);
+	_putchar('\n');
 	return (0);
 }
