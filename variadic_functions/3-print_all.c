@@ -47,15 +47,14 @@ void print_all(const char * const format, ...)
 	va_start(args, format);
 	while (format && format[i])
 	{
-		if (format[i] == 'c' || format[i] == 'i' ||
-format[i] == 'f' || format[i] == 's'){
-		print_string(sep);
 		switch (format[i])
 		{
 			case 'c':
+				_putchar(*sep);
 				_putchar(va_arg(args, int));
 				break;
 			case 'i':
+				_putchar(*sep);
 				print_number(va_arg(args, int));
 				break;
 			case 'f': {
@@ -63,18 +62,19 @@ format[i] == 'f' || format[i] == 's'){
 					  int whole = (int)f;
 					  int decimal = (int)((f - whole) * 1000000);
 
+					 _putchar(*sep);
 					  print_number(whole);
 					  _putchar('.');
 					  print_number(decimal);
 break;
 }
 			case 's':
-				 str = va_arg(args, char *);
-				 print_string(str ? str : "(nil)");
+			_putchar(*sep);
+			str = va_arg(args, char *);
+			print_string(str ? str : "(nil)");
 break;
 		}
 		sep = ", ";
-		}
 		i++;
 	}
 	va_end(args);
