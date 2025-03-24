@@ -7,15 +7,10 @@
  */
 void print_string(const char *str)
 {
-if (!str)
-{
-print_string("(nil)");
-return;
-}
-while (*str)
-{
-_putchar(*str++);
-}
+const char *nil = "(nil)";
+const char *to_print = str ? str : nil;
+while (*to_print)
+_putchar(*to_print++);
 }
 /**
  * print_number - Prints an integer using _putchar.
@@ -23,16 +18,16 @@ _putchar(*str++);
  */
 void print_number(int n)
 {
+unsigned int num = n;
+
 if (n < 0)
 {
 _putchar('-');
-n = -n;
+num = -n;
 }
-if (n / 10)
-{
-print_number(n / 10);
-}
-_putchar((n % 10) + '0');
+if (num / 10)
+print_number(num / 10);
+_putchar((num % 10) + '0');
 }
 /**
  * print_all - Prints anything based on the format.
