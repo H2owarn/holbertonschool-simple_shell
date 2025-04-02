@@ -42,5 +42,10 @@ void print_string(const char *str); /* Prints a string using _putchar */
  * Return: 1 on success, -1 on failure
  */
 int _putchar(char c);               /* Prints a single character */
-
+/**
+ * list_len - returns the total number of nodes
+ * @h: current node
+ * Return:stirng
+ */
+size_t list_len(const list_t *h);
 #endif /* VARIADIC_FUNCTIONS_H */
