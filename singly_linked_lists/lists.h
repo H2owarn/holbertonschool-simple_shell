@@ -48,4 +48,14 @@ int _putchar(char c);               /* Prints a single character */
  * Return:stirng
  */
 size_t list_len(const list_t *h);
+/**
+ * add_node - add node
+ * @head: start
+ * @str: char
+ *
+ * Return:address of the new element or  NULL if it failed
+ */
+list_t *add_node(list_t **head, const char *str);
+list_t *add_node_end(list_t **head, const char *str);
+void free_list(list_t *head);
 #endif /* VARIADIC_FUNCTIONS_H */
