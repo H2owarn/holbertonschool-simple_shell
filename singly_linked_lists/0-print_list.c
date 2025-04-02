@@ -13,6 +13,7 @@ void print_number(int n)
 
 	if (n < 0)
 	{
+		_putchar('-');
 		num = -n;
 	}
 	if (num / 10)
@@ -48,6 +49,7 @@ size_t print_list(const list_t *h)
 		print_string("[");
 		print_number(h->len);
 		print_string("]");
+		_putchar(' ');
 		print_string(h->str);
 		_putchar('\n');
 		h = h->next;
