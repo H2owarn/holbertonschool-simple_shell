@@ -48,7 +48,7 @@ size_t print_list(const list_t *h)
 	{
 		print_string("[");
 		print_number(h->len);
-		pritn_string("]");
+		print_string("]");
 		print_string(h->str);
 		_putchar('\n');
 		h = h->next;
