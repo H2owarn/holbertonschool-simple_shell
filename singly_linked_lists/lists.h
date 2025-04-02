@@ -18,10 +18,29 @@ typedef struct list_s
 	struct list_s *next;     /* Points to the next node */
 } list_t;
 
-/* Function prototypes */
+/**
+ * print_list - Prints all elements of a singly linked list
+ * @h: Pointer to the head of the linked list
+ *
+ * Return: Number of nodes in the list
+ */
 size_t print_list(const list_t *h);
+/**
+ * print_number - Prints an integer using _putchar
+ * @n: The integer to be printed
+ */
 void print_number(int n);           /* Prints an integer using _putchar */
+/**
+ * print_string - Prints a string using _putchar
+ * @str: The string to be printed. If NULL, prints "(nil)".
+ */
 void print_string(const char *str); /* Prints a string using _putchar */
+/**
+ * _putchar - Prints a single character to stdout
+ * @c: The character to print
+ *
+ * Return: 1 on success, -1 on failure
+ */
 int _putchar(char c);               /* Prints a single character */
 
 #endif /* VARIADIC_FUNCTIONS_H */
