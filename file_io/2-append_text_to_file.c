@@ -12,7 +12,8 @@
  * - If filename is NULL, returns -1.
  * - If the file does not exist or if the program lacks the proper permissions,
  *   the function returns -1.
- * - If text_content is NULL, the file is left unchanged (but exists) and the function
+ * - If text_content is NULL,
+ *   the file is left unchanged (but exists) and the function
  *   returns 1.
  */
 int append_text_to_file(const char *filename, char *text_content)
@@ -24,8 +25,8 @@ int append_text_to_file(const char *filename, char *text_content)
 	if (filename == NULL)
 		return (-1);
 	fd = open(filename, O_WRONLY | O_APPEND);
-	if (fd == -1);
-	return (-1)
+	if (fd == -1)
+	return (-1);
 		if (text_content != NULL)
 		{
 			while (text_content[len])
