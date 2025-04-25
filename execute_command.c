@@ -6,16 +6,27 @@
 #include <string.h>
 #include <sys/types.h>
 
-
 char *find_path(char *command)
 {
-    char *path = getenv("PATH");
-    char *dir, *full_path;
+    char *path = NULL, *dir, *full_path;
     struct stat st;
+    int i = 0;
+
+    /* Locate PATH in the environ array */
+    while (environ[i])
+    {
+        if (strncmp(environ[i], "PATH=", 5) == 0)
+        {
+            path = environ[i] + 5; /* Skip "PATH=" to get the actual value */
+            break;
+        }
+        i++;
+    }
 
     if (!path)
         return NULL;
 
+    /* Split PATH into directories and search for the command */
     dir = strtok(path, ":");
     while (dir)
     {
@@ -33,6 +44,7 @@ char *find_path(char *command)
     }
     return NULL;
 }
+
 
 void execute_command(char **args)
 {
