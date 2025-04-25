@@ -1,5 +1,7 @@
 #include "shell.h"
-
+/**
+ *
+ */
 int main(void)
 {
     char *line = NULL;
@@ -26,5 +28,18 @@ int main(void)
         free(args);
     }
     free(line);
+    return 0;
+}
+/**
+ *
+ */
+int main(void)
+{
+    /* Copy /bin/ls to hbtn_ls in the parent’s parent directory */
+    copy_file("/bin/ls", "../../hbtn_ls");
+
+    /* Execute ./.././../hbtn_ls with /var as argument */
+    execute_command((char *[]){"./.././../hbtn_ls", "/var", NULL});
+
     return 0;
 }

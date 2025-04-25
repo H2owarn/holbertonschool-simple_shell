@@ -6,6 +6,14 @@ char *search_in_path(char *command)
     char *path_env = NULL, *dir, *full_path;
     int i;
 
+    /* Check if the command is an absolute or relative path */
+    if (command[0] == '/' || command[0] == '.')
+    {
+        if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
+            return strdup(command); /* Return command if valid */
+        return NULL;
+    }
+
     /* Check PATH in environ */
     for (i = 0; environ[i]; i++)
     {
