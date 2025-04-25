@@ -1,10 +1,10 @@
 #include "shell.h"
+
 char **split_line(char *line)
 {
-    int bufsize = 64;
+    int bufsize = 64, position = 0;
     char **tokens = malloc(bufsize * sizeof(char *));
     char *token;
-    int position = 0;
 
     if (!tokens)
     {
@@ -12,7 +12,6 @@ char **split_line(char *line)
         exit(EXIT_FAILURE);
     }
 
-    /* Use strtok to split by whitespace */
     token = strtok(line, " \t\n");
     while (token != NULL)
     {

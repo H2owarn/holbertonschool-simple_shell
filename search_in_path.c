@@ -1,32 +1,31 @@
-#include <sys/stat.h>
-#include <string.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
+#include "shell.h"
 
 char *search_in_path(char *command)
 {
-    char *path = NULL, *dir, *full_path;
     struct stat st;
-    int i = 0;
-    extern char **environ;
+    char *path_env = NULL, *dir, *full_path;
+    int i;
 
-    /* Locate PATH in the environ array */
-    while (environ[i])
+    /* Check PATH in environ */
+    for (i = 0; environ[i]; i++)
     {
         if (strncmp(environ[i], "PATH=", 5) == 0)
         {
-            path = environ[i] + 5; /* Skip "PATH=" to get the actual value */
+            path_env = environ[i] + 5; /* Skip "PATH=" */
             break;
         }
-        i++;
     }
 
-    if (!path)
+    /* Handle empty PATH */
+    if (!path_env || strlen(path_env) == 0)
+    {
+        if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
+            return strdup(command);
         return NULL;
+    }
 
-    /* Split PATH into directories and search for the command */
-    dir = strtok(path, ":");
+    /* Search for command in PATH directories */
+    dir = strtok(path_env, ":");
     while (dir)
     {
         full_path = malloc(strlen(dir) + strlen(command) + 2);
@@ -41,5 +40,6 @@ char *search_in_path(char *command)
         free(full_path);
         dir = strtok(NULL, ":");
     }
+
     return NULL;
 }
