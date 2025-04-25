@@ -13,9 +13,10 @@ char *find_path(char *command)
 {
     struct stat st;
     char *path_env = NULL, *dir, *full_path;
+    int i;
 
     /* Check PATH in environ */
-    for (int i = 0; environ[i]; i++)
+    for (i = 0; environ[i]; i++)
     {
         if (strncmp(environ[i], "PATH=", 5) == 0)
         {
