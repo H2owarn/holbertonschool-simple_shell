@@ -5,52 +5,71 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "shell.h"
-
+/**
+ *
+ */
 char *find_path(char *command)
 {
-    char *path = NULL, *dir, *full_path;
+    char *path, *path_copy, *dir, *full_path;
     struct stat st;
-    int i = 0;
 
-    /* Locate PATH in the environ array */
-    while (environ[i])
+    /* Get PATH from environment */
+    path = getenv("PATH");
+    if (!path)
     {
-        if (strncmp(environ[i], "PATH=", 5) == 0)
-        {
-            path = environ[i] + 5; /* Skip "PATH=" to get the actual value */
-            break;
-        }
-        i++;
+        /* Fallback to /bin if PATH is empty */
+        path = "/bin";
     }
 
-    if (!path)
+    /* Make a copy of PATH to safely tokenize */
+    path_copy = strdup(path);
+    if (!path_copy)
+    {
+        perror("Error duplicating PATH");
         return NULL;
+    }
 
-    /* Split PATH into directories and search for the command */
-    dir = strtok(path, ":");
+    dir = strtok(path_copy, ":");
     while (dir)
     {
         full_path = malloc(strlen(dir) + strlen(command) + 2);
         if (!full_path)
         {
             perror("Error allocating memory");
+            free(path_copy);
             return NULL;
         }
+
         sprintf(full_path, "%s/%s", dir, command);
+
         if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
+        {
+            free(path_copy);
             return full_path;
+        }
+
         free(full_path);
         dir = strtok(NULL, ":");
     }
+
+    free(path_copy);
     return NULL;
 }
+/**
+ *
+ */
 void execute_command(char **args)
 {
-    char *path = NULL;
+    char *path;
     pid_t pid;
     int status;
 
-    if (args[0][0] == '/')
+    if (args[0] == NULL)
+        return; /* Ignore empty input */
+
+    /* Trim leading and trailing spaces here if needed */
+
+    if (args[0][0] == '/' || args[0][0] == '.')
         path = args[0];
     else
         path = find_path(args[0]);
@@ -66,11 +85,14 @@ void execute_command(char **args)
     if (pid == -1)
     {
         perror(args[0]);
-        free(path);
+        if (path != args[0])
+            free(path);
         return;
     }
+
     if (pid == 0)
     {
+        /* Execute the command */
         if (execve(path, args, environ) == -1)
         {
             perror(args[0]);
@@ -78,8 +100,11 @@ void execute_command(char **args)
         }
     }
     else
+    {
+        /* Parent process waits */
         wait(&status);
+    }
 
-    if (args[0][0] != '/')
+    if (path != args[0])
         free(path);
 }
