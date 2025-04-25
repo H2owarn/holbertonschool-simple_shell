@@ -9,7 +9,7 @@
  *
 */
 
-extern char **environ; // Declare the global environment variable
+extern char **environ; /* Declare the global environment variable
 
 char *find_path(char *command)
 {
