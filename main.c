@@ -5,26 +5,29 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "shell.h"
-
-char *trim_whitespace(char *str) {
+/**
+ *
+ */
+char *trim_whitespace(char *str) 
+{
     char *end;
 
     while (*str == ' ') str++;
-
     if (*str == 0) return str;
     end = str + strlen(str) - 1;
     while (end > str && *end == ' ') end--;
-
     *(end + 1) = '\0';
     return str;
 }
-
+/**
+ *
+ */
 int main(void)
 {
     char *line = NULL;
     size_t len = 0;
     ssize_t nread;
-    char **args;
+    char *command;
 
     while (1)
     {
@@ -37,15 +40,13 @@ int main(void)
             free(line);
             exit(EXIT_SUCCESS);
         }
-
-        char *command; 
-	command = strtok(line, "\n");
+        command = strtok(line, "\n");
         while (command)
         {
             command = trim_whitespace(command);
             if (*command != '\0')
             {
-                args = split_line(command);
+                char **args = split_line(command);
                 if (args[0] != NULL)
                 {
                     execute_command(args);
@@ -55,6 +56,7 @@ int main(void)
             command = strtok(NULL, "\n");
         }
     }
+
     free(line);
     return 0;
 }
