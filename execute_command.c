@@ -7,36 +7,40 @@
 #include "shell.h"
 /**
  *
- */
+*/
+
+extern char **environ; // Declare the global environment variable
+
 char *find_path(char *command)
 {
-    char *path, *path_copy, *dir, *full_path;
+    char *path = NULL, *dir, *full_path;
     struct stat st;
+    int i = 0;
 
-    /* Get PATH from environment */
-    path = getenv("PATH");
+    /* Search for PATH in the environ array */
+    while (environ[i])
+    {
+        if (strncmp(environ[i], "PATH=", 5) == 0)
+        {
+            path = environ[i] + 5; /* Skip "PATH=" */
+            break;
+        }
+        i++;
+    }
+
     if (!path)
     {
         /* Fallback to /bin if PATH is empty */
         path = "/bin";
     }
 
-    /* Make a copy of PATH to safely tokenize */
-    path_copy = strdup(path);
-    if (!path_copy)
-    {
-        perror("Error duplicating PATH");
-        return NULL;
-    }
-
-    dir = strtok(path_copy, ":");
+    dir = strtok(path, ":");
     while (dir)
     {
         full_path = malloc(strlen(dir) + strlen(command) + 2);
         if (!full_path)
         {
             perror("Error allocating memory");
-            free(path_copy);
             return NULL;
         }
 
@@ -44,16 +48,14 @@ char *find_path(char *command)
 
         if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
         {
-            free(path_copy);
-            return full_path;
+            return full_path; /* Command found */
         }
 
         free(full_path);
         dir = strtok(NULL, ":");
     }
 
-    free(path_copy);
-    return NULL;
+    return NULL; /* Command not found */
 }
 /**
  *
