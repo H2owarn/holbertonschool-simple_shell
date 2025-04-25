@@ -5,57 +5,22 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
-
 char *find_path(char *command)
 {
-    char *path = NULL, *dir, *full_path;
     struct stat st;
-    int i = 0;
 
-    /* Locate PATH in the environ array */
-    while (environ[i])
-    {
-        if (strncmp(environ[i], "PATH=", 5) == 0)
-        {
-            path = environ[i] + 5; /* Skip "PATH=" to get the actual value */
-            break;
-        }
-        i++;
-    }
+    if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
+        return strdup(command); /* Return a copy of the command if valid */
 
-    if (!path)
-        return NULL;
-
-    /* Split PATH into directories and search for the command */
-    dir = strtok(path, ":");
-    while (dir)
-    {
-        full_path = malloc(strlen(dir) + strlen(command) + 2);
-        if (!full_path)
-        {
-            perror("Error allocating memory");
-            return NULL;
-        }
-        sprintf(full_path, "%s/%s", dir, command);
-        if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
-            return full_path;
-        free(full_path);
-        dir = strtok(NULL, ":");
-    }
-    return NULL;
+    /* Search in PATH if command is not an absolute/relative path */
+    return search_in_path(command);
 }
-
 
 void execute_command(char **args)
 {
-    char *path = NULL;
+    char *path = find_path(args[0]);
     pid_t pid;
     int status;
-
-    if (args[0][0] == '/')
-        path = args[0];
-    else
-        path = find_path(args[0]);
 
     if (!path)
     {
@@ -67,21 +32,23 @@ void execute_command(char **args)
     pid = fork();
     if (pid == -1)
     {
-        perror(args[0]);
+        perror("Fork failed");
         free(path);
         return;
     }
-    if (pid == 0)
+
+    if (pid == 0) /* Child process */
     {
         if (execve(path, args, environ) == -1)
         {
             perror(args[0]);
+            free(path);
             exit(EXIT_FAILURE);
         }
     }
-    else
+    else /* Parent process */
+    {
         wait(&status);
-
-    if (args[0][0] != '/')
         free(path);
+    }
 }

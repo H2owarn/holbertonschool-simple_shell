@@ -14,5 +14,6 @@ extern char **environ;
 char **split_line(char *line);
 void execute_command(char **args);
 char *find_path(char *command);
+void copy_file(const char *src, const char *dest);
 
 #endif
