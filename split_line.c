@@ -1,10 +1,9 @@
-#include "shell.h"
-
 char **split_line(char *line)
 {
-    int bufsize = 64, position = 0;
+    int bufsize = 64;
     char **tokens = malloc(bufsize * sizeof(char *));
     char *token;
+    int position = 0;
 
     if (!tokens)
     {
