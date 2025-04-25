@@ -2,7 +2,8 @@
 
 char **split_line(char *line)
 {
-    char **tokens = malloc(64 * sizeof(char *));
+    int bufsize = 64;
+    char **tokens = malloc(bufsize * sizeof(char *));
     char *token;
     int position = 0;
 
@@ -16,6 +17,16 @@ char **split_line(char *line)
     while (token != NULL)
     {
         tokens[position++] = token;
+        if (position >= bufsize)
+        {
+            bufsize += 64;
+            tokens = realloc(tokens, bufsize * sizeof(char *));
+            if (!tokens)
+            {
+                perror("Error reallocating memory");
+                exit(EXIT_FAILURE);
+            }
+        }
         token = strtok(NULL, " \t\n");
     }
     tokens[position] = NULL;
