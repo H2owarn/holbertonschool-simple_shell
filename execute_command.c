@@ -5,22 +5,56 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/types.h>
+/**
+ *
+ *
+ */
 char *find_path(char *command)
 {
     struct stat st;
+    char *path_env = NULL, *dir, *full_path;
 
-    /* Absolute or relative path handling */
-    if (command[0] == '/' || command[0] == '.')
+    /* Check PATH in environ */
+    for (int i = 0; environ[i]; i++)
+    {
+        if (strncmp(environ[i], "PATH=", 5) == 0)
+        {
+            path_env = environ[i] + 5; /* Skip "PATH=" */
+            break;
+        }
+    }
+
+    /* If PATH is empty, rely only on absolute paths */
+    if (!path_env || strlen(path_env) == 0)
     {
         if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
-            return strdup(command); /* Command exists and is executable */
+            return strdup(command);
         return NULL;
     }
 
-    /* Search in PATH for regular commands like "ls" */
-    return search_in_path(command);
-}
+    /* Search command in PATH directories */
+    dir = strtok(path_env, ":");
+    while (dir)
+    {
+        full_path = malloc(strlen(dir) + strlen(command) + 2);
+        if (!full_path)
+        {
+            perror("Error allocating memory");
+            return NULL;
+        }
+        sprintf(full_path, "%s/%s", dir, command);
+        if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
+            return full_path;
+        free(full_path);
+        dir = strtok(NULL, ":");
+    }
 
+    return NULL;
+}
+/**
+ *
+ *
+ */
 void execute_command(char **args)
 {
     char *path = find_path(args[0]);

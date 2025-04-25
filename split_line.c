@@ -1,5 +1,4 @@
 #include "shell.h"
-
 char **split_line(char *line)
 {
     int bufsize = 64;
@@ -13,6 +12,7 @@ char **split_line(char *line)
         exit(EXIT_FAILURE);
     }
 
+    /* Use strtok to split by whitespace */
     token = strtok(line, " \t\n");
     while (token != NULL)
     {
