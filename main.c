@@ -38,7 +38,8 @@ int main(void)
             exit(EXIT_SUCCESS);
         }
 
-        char *command = strtok(line, "\n");
+        char *command; 
+	command = strtok(line, "\n");
         while (command)
         {
             command = trim_whitespace(command);
