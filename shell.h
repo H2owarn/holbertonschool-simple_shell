@@ -13,5 +13,6 @@ extern char **environ;
 /* Function prototypes */
 char **split_line(char *line);
 void execute_command(char **args);
+char *find_path(char *command);
 
 #endif
