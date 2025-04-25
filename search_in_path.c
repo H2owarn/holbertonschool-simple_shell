@@ -9,6 +9,7 @@ char *search_in_path(char *command)
     char *path = NULL, *dir, *full_path;
     struct stat st;
     int i = 0;
+    extern char **environ;
 
     /* Locate PATH in the environ array */
     while (environ[i])
