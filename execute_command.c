@@ -9,10 +9,15 @@ char *find_path(char *command)
 {
     struct stat st;
 
-    if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
-        return strdup(command); /* Return a copy of the command if valid */
+    /* Absolute or relative path handling */
+    if (command[0] == '/' || command[0] == '.')
+    {
+        if (stat(command, &st) == 0 && (st.st_mode & S_IXUSR))
+            return strdup(command); /* Command exists and is executable */
+        return NULL;
+    }
 
-    /* Search in PATH if command is not an absolute/relative path */
+    /* Search in PATH for regular commands like "ls" */
     return search_in_path(command);
 }
 
