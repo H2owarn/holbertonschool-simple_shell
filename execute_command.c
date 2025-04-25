@@ -28,7 +28,7 @@ char *find_path(char *command)
         i++;
     }
 
-    if (!path)
+    if (!path || strcmp(path, "") == 0)
     {
         /* Fallback to /bin if PATH is empty */
         path = "/bin";
