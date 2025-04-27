@@ -17,7 +17,6 @@
 char *search_in_path(char *command)
 {
     char *path_env, *path_copy, *token, *full_path;
-    struct stat st;
 
     if (command == NULL)
         return (NULL);
