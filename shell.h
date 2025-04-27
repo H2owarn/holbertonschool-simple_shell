@@ -21,5 +21,6 @@ void prompt(void); /* if you have a function to print your shell prompt */
 int _strlen(const char *s);
 char *_strchr(const char *s, char c);
 char *_strdup(const char *s);
+void free_args(char **args);
 #endif /* SHELL_H */
 

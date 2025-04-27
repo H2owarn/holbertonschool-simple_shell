@@ -2,6 +2,22 @@
 #include <stdlib.h>
 #include "shell.h"
 
+/**
+ * free_args - Free an array of arguments
+ * @args: Null-terminated array of strings
+ */
+void free_args(char **args)
+{
+    int i;
+
+    if (!args)
+        return;
+
+    for (i = 0; args[i]; i++)
+        free(args[i]);
+    free(args);
+}
+
 /* _strlen */
 int _strlen(const char *s)
 {
