@@ -60,53 +60,65 @@ char *find_path(char *command)
 /**
  *
  */
-void execute_command(char **args)
+#include "shell.h"
+
+/**
+ * execute_command - Search, fork and execute a command
+ * @args: Arguments (array of strings)
+ * Return: 1 to continue shell loop, 0 to exit
+ */
+int execute_command(char **args)
 {
-    char *path;
-    pid_t pid;
-    int status;
+	pid_t pid;
+	int status;
+	char *command_path;
 
-    if (args[0] == NULL)
-        return; /* Ignore empty input */
+	if (args[0] == NULL)
+		return (1);
 
-    /* Trim leading and trailing spaces here if needed */
+	/* Search if the command exists */
+	command_path = search_in_path(args[0]);
+	if (command_path == NULL)
+	{
+		/* Check if it's an absolute or relative path */
+		if (access(args[0], X_OK) == 0)
+		{
+			command_path = strdup(args[0]);
+			if (command_path == NULL)
+			{
+				perror("simple_shell");
+				return (1);
+			}
+		}
+		else
+		{
+			dprintf(STDERR_FILENO, "simple_shell: %s: not found\n", args[0]);
+			return (1);
+		}
+	}
 
-    if (args[0][0] == '/' || args[0][0] == '.')
-        path = args[0];
-    else
-        path = find_path(args[0]);
+	/* Fork only if executable found */
+	pid = fork();
+	if (pid == 0)
+	{
+		/* Child process */
+		if (execve(command_path, args, environ) == -1)
+		{
+			perror("simple_shell");
+		}
+		exit(EXIT_FAILURE);
+	}
+	else if (pid < 0)
+	{
+		/* Fork error */
+		perror("simple_shell");
+	}
+	else
+	{
+		/* Parent process */
+		waitpid(pid, &status, 0);
+	}
 
-    if (!path)
-    {
-        write(STDERR_FILENO, args[0], strlen(args[0]));
-        write(STDERR_FILENO, ": Command not found\n", 20);
-        return;
-    }
-
-    pid = fork();
-    if (pid == -1)
-    {
-        perror(args[0]);
-        if (path != args[0])
-            free(path);
-        return;
-    }
-
-    if (pid == 0)
-    {
-        /* Execute the command */
-        if (execve(path, args, environ) == -1)
-        {
-            perror(args[0]);
-            exit(EXIT_FAILURE);
-        }
-    }
-    else
-    {
-        /* Parent process waits */
-        wait(&status);
-    }
-
-    if (path != args[0])
-        free(path);
+	free(command_path);
+	return (1);
 }
