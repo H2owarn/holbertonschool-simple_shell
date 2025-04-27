@@ -58,11 +58,6 @@ char *find_path(char *command)
     return NULL; /* Command not found */
 }
 /**
- *
- */
-#include "shell.h"
-
-/**
  * execute_command - Search, fork and execute a command
  * @args: Arguments (array of strings)
  * Return: 1 to continue shell loop, 0 to exit
