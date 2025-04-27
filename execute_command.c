@@ -89,9 +89,8 @@ void execute_command(char **args)
 		return;
 
 	if (strchr(args[0], '/'))
-		path = args[0];
+		path = _strdup(args[0]);
 	else
-	{
 		path = find_path(args[0]);
 		if (!path)
 		{
@@ -99,18 +98,18 @@ void execute_command(char **args)
 			write(STDERR_FILENO, args[0], strlen(args[0]));
 			write(STDERR_FILENO, ": not found\n", 12);
 			if (!isatty(STDIN_FILENO))
+			{
+				free_args(args);
 			exit(127);
-			else
+			}
 			return;
 		}
-	}
 
 	pid = fork();
 	if (pid == -1)
 	{
 		perror("fork");
-		if (path != args[0])
-			free(path);
+		free(path);
 		return;
 	}
 
@@ -124,10 +123,8 @@ void execute_command(char **args)
 	}
 	else
 	{
-		wait(&status);
+		wait(pid, &status, 0);
 	}
-
-	if (path != args[0])
-		free(path);
+	free(path);
 }
 
