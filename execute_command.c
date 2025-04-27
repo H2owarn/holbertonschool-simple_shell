@@ -5,75 +5,102 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <unistd.h>
+#include <sys/wait.h>
+
+extern char **environ;
 
 char *find_path(char *command)
 {
-    char *path = NULL, *dir, *full_path;
-    struct stat st;
-    int i = 0;
+    char *path_env, *path_copy, *dir;
+    char *full_path;
+    size_t full_len;
 
-    /* Locate PATH in the environ array */
-    while (environ[i])
-    {
-        if (strncmp(environ[i], "PATH=", 5) == 0)
-        {
-            path = environ[i] + 5; /* Skip "PATH=" to get the actual value */
-            break;
-        }
-        i++;
-    }
-
-    if (!path)
+    if (!command)
         return NULL;
 
-    /* Split PATH into directories and search for the command */
-    dir = strtok(path, ":");
-    while (dir)
+    /* Get PATH from the environment */
+    path_env = getenv("PATH");
+    if (!path_env)
+        return NULL;
+
+    /* Make a copy because strtok modifies the string */
+    path_copy = strdup(path_env);
+    if (!path_copy)
+        return NULL;
+
+    dir = strtok(path_copy, ":");
+    while (dir != NULL)
     {
-        full_path = malloc(strlen(dir) + strlen(command) + 2);
+        /* Build full path string: dir + "/" + command + null */
+        full_len = strlen(dir) + 1 + strlen(command) + 1;
+        full_path = malloc(full_len);
         if (!full_path)
         {
-            perror("Error allocating memory");
+            free(path_copy);
             return NULL;
         }
-        sprintf(full_path, "%s/%s", dir, command);
-        if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
-            return full_path;
+
+        strcpy(full_path, dir);
+        strcat(full_path, "/");
+        strcat(full_path, command);
+
+        /* Check if this file exists and is executable */
+        if (access(full_path, X_OK) == 0)
+        {
+            free(path_copy);
+            return full_path; /* SUCCESS: Return this path */
+        }
+
+        /* Otherwise try next directory */
         free(full_path);
         dir = strtok(NULL, ":");
     }
+
+    /* Not found */
+    free(path_copy);
     return NULL;
 }
 /**
  *
  */
-void execute_command(char **args)
 {
     char *path = NULL;
     pid_t pid;
     int status;
 
-    if (args[0][0] == '/')
-        path = args[0];
-    else
-        path = find_path(args[0]);
-
-    if (!path)
-    {
-        write(STDERR_FILENO, args[0], strlen(args[0]));
-        write(STDERR_FILENO, ": Command not found\n", 20);
+    if (!args || !args[0]) /* Always validate inputs */
         return;
+
+    /* Check if the command contains a '/' */
+    if (strchr(args[0], '/'))
+    {
+        path = args[0];
+    }
+    else
+    {
+        /* Otherwise, search in PATH */
+        path = find_path(args[0]);
+        if (!path)
+        {
+            write(STDERR_FILENO, args[0], strlen(args[0]));
+            write(STDERR_FILENO, ": Command not found\n", 20);
+            return;
+        }
     }
 
+    /* Always fork for executing commands */
     pid = fork();
     if (pid == -1)
     {
-        perror(args[0]);
-        free(path);
+        perror("fork");
+        if (path != args[0]) /* Free only if it was dynamically allocated */
+            free(path);
         return;
     }
+
     if (pid == 0)
     {
+        /* Child process */
         if (execve(path, args, environ) == -1)
         {
             perror(args[0]);
@@ -81,8 +108,12 @@ void execute_command(char **args)
         }
     }
     else
+    {
+        /* Parent process */
         wait(&status);
+    }
 
-    if (args[0][0] != '/')
+    /* Free path if we malloc'd it */
+    if (path != args[0])
         free(path);
 }

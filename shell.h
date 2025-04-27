@@ -1,17 +1,23 @@
 #ifndef SHELL_H
 #define SHELL_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/wait.h>
+/* Standard libraries */
+#include <stdio.h>    /* printf, perror */
+#include <stdlib.h>   /* malloc, free, exit */
+#include <unistd.h>   /* fork, execve, access */
+#include <string.h>   /* strtok, strdup, strchr */
+#include <sys/types.h> /* pid_t */
+#include <sys/wait.h> /* wait */
 
+/* Global environment */
 extern char **environ;
 
 /* Function prototypes */
-char **split_line(char *line);
 void execute_command(char **args);
+char *find_path(char *command);
+char **split_line(char *line);
+void free_args(char **args);
+void prompt(void); /* if you have a function to print your shell prompt */
 
-#endif
+#endif /* SHELL_H */
+
