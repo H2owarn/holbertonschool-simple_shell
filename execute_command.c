@@ -98,7 +98,9 @@ void execute_command(char **args)
 			write(STDERR_FILENO, "./hsh: 1: ", 10);
 			write(STDERR_FILENO, args[0], strlen(args[0]));
 			write(STDERR_FILENO, ": not found\n", 12);
-			exit(127); /* Exit with 127 when command not found */
+			if (!isatty(STDIN_FILENO))
+			exit(127);
+			return ();
 		}
 	}
 
