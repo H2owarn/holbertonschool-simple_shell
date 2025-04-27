@@ -76,60 +76,55 @@ char *find_path(char *command)
     return NULL;
 }
 /**
- *
+ * execute_command - Executes a command with arguments
+ * @args: NULL terminated array of arguments
  */
 void execute_command(char **args)
 {
-    char *path = NULL;
-    pid_t pid;
-    int status;
+	char *path = NULL;
+	pid_t pid;
+	int status;
 
-    if (!args || !args[0]) /* Always validate inputs */
-        return;
+	if (!args || !args[0])
+		return;
 
-    /* Check if the command contains a '/' */
-    if (strchr(args[0], '/'))
-    {
-        path = args[0];
-    }
-    else
-    {
-        /* Otherwise, search in PATH */
-        path = find_path(args[0]);
-        if (!path)
-        {
-            write(STDERR_FILENO, args[0], strlen(args[0]));
-            write(STDERR_FILENO, ": Command not found\n", 20);
-            return;
-        }
-    }
+	if (strchr(args[0], '/'))
+		path = args[0];
+	else
+	{
+		path = find_path(args[0]);
+		if (!path)
+		{
+			write(STDERR_FILENO, "./hsh: 1: ", 10);
+			write(STDERR_FILENO, args[0], strlen(args[0]));
+			write(STDERR_FILENO, ": not found\n", 12);
+			exit(127); /* Exit with 127 when command not found */
+		}
+	}
 
-    /* Always fork for executing commands */
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("fork");
-        if (path != args[0]) /* Free only if it was dynamically allocated */
-            free(path);
-        return;
-    }
+	pid = fork();
+	if (pid == -1)
+	{
+		perror("fork");
+		if (path != args[0])
+			free(path);
+		return;
+	}
 
-    if (pid == 0)
-    {
-        /* Child process */
-        if (execve(path, args, environ) == -1)
-        {
-            perror(args[0]);
-            exit(EXIT_FAILURE);
-        }
-    }
-    else
-    {
-        /* Parent process */
-        wait(&status);
-    }
+	if (pid == 0)
+	{
+		if (execve(path, args, environ) == -1)
+		{
+			perror(args[0]);
+			exit(EXIT_FAILURE);
+		}
+	}
+	else
+	{
+		wait(&status);
+	}
 
-    /* Free path if we malloc'd it */
-    if (path != args[0])
-        free(path);
+	if (path != args[0])
+		free(path);
 }
+
