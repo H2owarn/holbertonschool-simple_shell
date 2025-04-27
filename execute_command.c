@@ -76,55 +76,55 @@ char *find_path(char *command)
     return NULL;
 }
 /**
- * execute_command - Executes a command with arguments
- * @args: NULL terminated array of arguments
+ * execute_command - Execute a command
+ * @args: Null-terminated array of arguments
  */
 void execute_command(char **args)
 {
-	char *path = NULL;
-	pid_t pid;
-	int status;
+    pid_t pid;
+    int status;
+    char *path = NULL;
 
-	if (!args || !args[0])
-		return;
+    if (!args || !args[0])
+        return;
+    if (_strchr(args[0], '/'))
+        path = _strdup(args[0]);
+    else
+        path = find_path(args[0]);
+    if (!path)
+    {
+        write(STDERR_FILENO, "./hsh: 1: ", 10);
+        write(STDERR_FILENO, args[0], _strlen(args[0]));
+        write(STDERR_FILENO, ": not found\n", 12);
 
-	if (strchr(args[0], '/'))
-		path = _strdup(args[0]);
-	else
-		path = find_path(args[0]);
-		if (!path)
-		{
-			write(STDERR_FILENO, "./hsh: 1: ", 10);
-			write(STDERR_FILENO, args[0], strlen(args[0]));
-			write(STDERR_FILENO, ": not found\n", 12);
-			if (!isatty(STDIN_FILENO))
-			{
-				free_args(args);
-			exit(127);
-			}
-			return;
-		}
+        if (!isatty(STDIN_FILENO))
+        {
+            free_args(args);
+            exit(127);
+        }
+        return;
+    }
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("fork");
+        free(path);
+        return;
+    }
 
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("fork");
-		free(path);
-		return;
-	}
+    if (pid == 0)
+    {
+        if (execve(path, args, environ) == -1)
+        {
+            perror(args[0]);
+            exit(EXIT_FAILURE);
+        }
+    }
+    else
+    {
+        waitpid(pid, &status, 0);
+    }
 
-	if (pid == 0)
-	{
-		if (execve(path, args, environ) == -1)
-		{
-			perror(args[0]);
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
-	{
-		waitpid(pid, &status, 0);
-	}
-	free(path);
+    free(path);
 }
 
