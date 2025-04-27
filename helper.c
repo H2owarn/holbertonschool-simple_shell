@@ -1,3 +1,7 @@
+#include <stddef.h>
+#include <stdlib.h>
+#include "shell.h"
+
 /* _strlen */
 int _strlen(const char *s)
 {
