@@ -2,7 +2,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <string.h>
 int main(void)
 {
     char *line = NULL;
@@ -13,26 +13,26 @@ int main(void)
     while (1)
     {
         if (isatty(STDIN_FILENO))
-            write(STDOUT_FILENO, "$ ", 2);
-
+            write(STDOUT_FILENO, "($) ", 4);
+        
         nread = getline(&line, &len, stdin);
         if (nread == -1)
         {
             free(line);
             exit(EXIT_SUCCESS);
         }
-
-        args = parse_line(line);
-        if (args == NULL)
-            continue; // If parsing fails, skip.
-
-        if (_strcmp(args[0], "exit") == 0)
-            handle_exit(args);
-
-        execute_command(args);
-        free_args(args); // Free allocated memory for args.
+        args = split_line(line);
+        if (args[0] != NULL && _strcmp(args[0], "exit") == 0)
+	{
+		free_args(args);
+		free(line);
+		exit(EXIT_SUCCESS);
+	}
+	else
+	{
+            execute_command(args);
+	}
+        free(args);
     }
-
     free(line);
-    return 0;
 }

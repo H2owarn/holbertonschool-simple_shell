@@ -24,6 +24,7 @@ char *_strdup(const char *s);
 void free_args(char **args);
 void handle_exit(char **args);
 int _atoi(const char *s);
-
+int _strcmp(const char *s1, const char *s2);
+char **parse_line(char *line);
 #endif /* SHELL_H */
 
