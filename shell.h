@@ -22,5 +22,8 @@ int _strlen(const char *s);
 char *_strchr(const char *s, char c);
 char *_strdup(const char *s);
 void free_args(char **args);
+void handle_exit(char **args);
+int _atoi(const char *s);
+
 #endif /* SHELL_H */
 

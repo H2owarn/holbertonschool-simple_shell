@@ -18,11 +18,15 @@ int main(void)
             free(line);
             exit(EXIT_SUCCESS);
         }
-
         args = split_line(line);
-        if (args[0] != NULL)
+        if (args[0] != NULL && _strcmp(args[0], "exit") == 0)
+	{
+		handle_exit(args);
+	}
+	else
+	{
             execute_command(args);
-
+	}
         free(args);
     }
     free(line);
