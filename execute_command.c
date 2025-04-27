@@ -123,7 +123,7 @@ void execute_command(char **args)
 	}
 	else
 	{
-		wait(pid, &status, 0);
+		waitpid(pid, &status, 0);
 	}
 	free(path);
 }
