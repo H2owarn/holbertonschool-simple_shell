@@ -14,25 +14,30 @@ int main(void)
     {
         if (isatty(STDIN_FILENO))
             write(STDOUT_FILENO, "($) ", 4);
-        
+
         nread = getline(&line, &len, stdin);
         if (nread == -1)
         {
             free(line);
             exit(EXIT_SUCCESS);
         }
+
         args = split_line(line);
-        if (args[0] != NULL && _strcmp(args[0], "exit") == 0)
-	{
-		free_args(args);
-		free(line);
-		exit(EXIT_SUCCESS);
-	}
-	else
-	{
-            execute_command(args);
-	}
-        free(args);
+        if (args == NULL)
+            continue;
+
+        if (_strcmp(args[0], "exit") == 0)
+        {
+            free_args(args);
+            free(line);
+            exit(EXIT_SUCCESS);
+        }
+
+        execute_command(args);
+        free_args(args);
     }
+
     free(line);
+    return 0;
 }
+
