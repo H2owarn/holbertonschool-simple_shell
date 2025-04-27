@@ -63,6 +63,7 @@ char *find_path(char *command)
 /**
  *
  */
+void execute_command(char **args)
 {
     char *path = NULL;
     pid_t pid;
