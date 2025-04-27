@@ -100,6 +100,7 @@ void execute_command(char **args)
 			write(STDERR_FILENO, ": not found\n", 12);
 			if (!isatty(STDIN_FILENO))
 			exit(127);
+			else
 			return;
 		}
 	}
