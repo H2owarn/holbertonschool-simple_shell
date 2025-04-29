@@ -35,35 +35,36 @@ int handle_builtin_exit(char **args)
  */
 int execute_fork(char *path, char **args)
 {
-	pid_t pid;
-	int status;
-	int exit_status = 0;
+    pid_t pid;
+    int status;
+    int exit_status = 0;
 
-	pid = fork();
-	if (pid == -1)
-	{
-		perror("Error:");
-		free(path);
-		return;
-	}
+    pid = fork();
+    if (pid == -1)
+    {
+        perror("Error:");
+        free(path);
+        return (1);
+    }
+    
+    if (pid == 0)
+    {
+        if (execve(path, args, environ) == -1)
+        {
+            perror(args[0]);
+            exit(EXIT_FAILURE);
+        }
+    }
+    else
+    {
+        wait(&status);
+        if (WIFEXITED(status))
+            exit_status = WEXITSTATUS(status);
+        else
+            exit_status = 1;
+    }
 
-	if (pid == 0)
-	{
-		if (execve(path, args, environ) == -1)
-		{
-			perror(args[0]);
-			exit(EXIT_FAILURE);
-		}
-	}
-	else
-	{
-		wait(&status);
-		if (WIFEXITED(status))
-			last_exit_status = WEXITSTATUS(status);
-		else
-			last_exit_status = 1;
-	}
-	return (exit_status);
+    return (exit_status);
 }
 
 /**
