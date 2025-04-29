@@ -35,36 +35,33 @@ char *get_path_env(void)
  */
 char *find_path(char *command)
 {
-    char *path_env = get_path_env();
-    char *token, *path_copy, *full_path;
-    struct stat st;
+	char *path_env = get_path_env();
+	char *token, *path_copy, *full_path;
+	struct stat st;
 
-    path_copy = _strdup(path_env);
-    token = strtok(path_copy, ":");
-    while (token)
-    {
-        full_path = malloc(_strlen(token) + _strlen(command) + 2);
-        if (!full_path)
-        {
-            free(path_copy);
-            return (NULL);
-        }
-        strcpy(full_path, token);
-        strcat(full_path, "/");
-        strcat(full_path, command);
-
-        if (stat(full_path, &st) == 0)
-        {
-            free(path_copy);
-            return full_path;
-        }
-
-        free(full_path);
-        token = strtok(NULL, ":");
-    }
-
-    free(path_copy);
-    return NULL;
+	path_copy = _strdup(path_env);
+	token = strtok(path_copy, ":");
+	while (token)
+	{
+		full_path = malloc(_strlen(token) + _strlen(command) + 2);
+		if (!full_path)
+		{
+			free(path_copy);
+			return (NULL);
+		}
+		strcpy(full_path, token);
+		strcat(full_path, "/");
+		strcat(full_path, command);
+		if (stat(full_path, &st) == 0)
+		{
+			free(path_copy);
+			return (full_path);
+		}
+		free(full_path);
+		token = strtok(NULL, ":");
+	}
+	free(path_copy);
+	return (NULL);
 }
 /**
  * get_command_path - Find the full path of a command
@@ -97,11 +94,9 @@ char *find_path_custom(char *command, char *path_env)
 
 	if (!command || !path_env)
 		return (NULL);
-
 	path_copy = _strdup(path_env);
 	if (!path_copy)
 		return (NULL);
-
 	dir = strtok(path_copy, ":");
 	while (dir)
 	{
@@ -111,11 +106,9 @@ char *find_path_custom(char *command, char *path_env)
 			free(path_copy);
 			return (NULL);
 		}
-
 		strcpy(full_path, dir);
 		strcat(full_path, "/");
 		strcat(full_path, command);
-
 		if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
 		{
 			free(path_copy);
@@ -124,7 +117,6 @@ char *find_path_custom(char *command, char *path_env)
 		free(full_path);
 		dir = strtok(NULL, ":");
 	}
-
 	free(path_copy);
 	return (NULL);
 }

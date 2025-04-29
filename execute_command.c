@@ -28,6 +28,7 @@ int handle_builtin_exit(char **args)
 int handle_builtin_env(char **args)
 {
 	int i;
+
 	if (_strcmp(args[0], "env") == 0)
 	{
 		for (i = 0; environ[i]; i++)
