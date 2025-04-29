@@ -7,20 +7,18 @@
  */
 int _atoi(const char *s)
 {
-    int i = 0, result = 0;
+	int i = 0, result = 0;
 
-    if (!s)
-        return -1;
-
-    while (s[i])
-    {
-        if (s[i] < '0' || s[i] > '9')
-            return -1; /* Not a valid number */
-        result = result * 10 + (s[i] - '0');
-        i++;
-    }
-
-    return result;
+	if (!s)
+		return (-1);
+	while (s[i])
+	{
+		if (s[i] < '0' || s[i] > '9')
+			return (-1);
+		result = result * 10 + (s[i] - '0');
+		i++;
+	}
+	return (result);
 }
 
 /**
@@ -29,24 +27,23 @@ int _atoi(const char *s)
  */
 void handle_exit(char **args)
 {
-    int exit_status;
+	int exit_status;
 
-    if (args[1]) /* If there is an argument */
-    {
-        exit_status = _atoi(args[1]);
-        if (exit_status == -1)
-        {
-            write(STDERR_FILENO, "./hsh: 1: exit: Illegal number: ", 31);
-            write(STDERR_FILENO, args[1], _strlen(args[1]));
-            write(STDERR_FILENO, "\n", 1);
-            return;
-        }
-    }
-    else
-    {
-	    exit_status = last_exit_status;
-    }
-
-    free_args(args);
-    exit(exit_status);
+	if (args[1])
+	{
+		exit_status = _atoi(args[1]);
+		if (exit_status == -1)
+		{
+			write(STDERR_FILENO, "./hsh: 1: exit: Illegal number: ", 31);
+			write(STDERR_FILENO, args[1], _strlen(args[1]));
+			write(STDERR_FILENO, "\n", 1);
+			return;
+		}
+	}
+	else
+	{
+		exit_status = last_exit_status;
+	}
+	free_args(args);
+	exit(exit_status);
 }

@@ -5,14 +5,14 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include "shell.h"
-int last_exit_status = 0;
 
 /**
  * main - Entry point for the simple shell program
+ *
  * Return: Always returns 0 on successful execution.
+ * int last_exit_status = 0;
+ * dcare this when run code
  */
-
-
 int main(void)
 {
 	char *line = NULL;
