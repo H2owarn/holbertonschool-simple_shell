@@ -18,7 +18,6 @@ int main(void)
 	size_t len = 0;
 	ssize_t nread;
 	char **args;
-	int last_exit_status = 0;
 
 	while (1)
 	{
