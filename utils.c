@@ -81,23 +81,22 @@ char *find_path(char *command)
 **/
 char *get_command_path(char **args)
 {
+    char *path_env;
     char *path = NULL;
-    char *path_env = get_path_env();
 
     if (_strchr(args[0], '/'))
     {
-        path = _strdup(args[0]);
+        return (_strdup(args[0]));
     }
-    else
-    {
-        /* Check if PATH is NULL or empty */
-        if (!path_env || path_env[0] == '\0')
-        {
-            return NULL;
-        }
 
-        path = find_path(args[0]);
+    path_env = get_path_env();
+
+    if (!path_env || path_env[0] == '\0')
+    {
+        return (NULL);
     }
-    return path;
+
+    path = find_path(args[0]);
+    return (path);
 }
 
