@@ -82,6 +82,7 @@ char *find_path(char *command)
 char *get_command_path(char **args)
 {
 	char *path = NULL;
+	char *path_env = get_path_env();
 
 	if (_strchr(args[0], '/'))
 	{
@@ -89,21 +90,13 @@ char *get_command_path(char **args)
 	}
 	else
 	{
-		path = find_path(args[0]);
-		if (!path)
+		if (!path_env || path_env[0] == '\0')
 		{
-			char *directories[] = {"/bin/", "/usr/bin/", NULL};
-			int i = 0;
-			char full_path[256];
-
-			while (directories[i])
+			if (!path_env || path_env[0] == '\0')
 			{
-				snprintf(full_path, sizeof(full_path), "%s%s", directories[i], args[0]);
-				if (access(full_path, X_OK) == 0)
-					return (_strdup(full_path));
-				i++;
+				return (NULL);
 			}
-		}
+			path = find_path(args[0]);
 	}
 	return (path);
 }
