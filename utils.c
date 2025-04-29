@@ -39,8 +39,8 @@ char *find_path(char *command)
     char *token, *path_copy, *full_path;
     struct stat st;
 
-    if (!path_env || path_env[0] == '\0')  // <--- ADD THIS CHECK
-        return NULL;
+    if (!path_env || path_env[0] == '\0')
+        return (NULL);
 
     path_copy = _strdup(path_env);
     token = strtok(path_copy, ":");
@@ -50,7 +50,7 @@ char *find_path(char *command)
         if (!full_path)
         {
             free(path_copy);
-            return NULL;
+            return (NULL);
         }
         strcpy(full_path, token);
         strcat(full_path, "/");
