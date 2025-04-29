@@ -52,9 +52,9 @@ char *find_path(char *command)
             free(path_copy);
             return NULL;
         }
-        _strcpy(full_path, token);
-        _strcat(full_path, "/");
-        _strcat(full_path, command);
+        strcpy(full_path, token);
+        strcat(full_path, "/");
+        strcat(full_path, command);
 
         if (stat(full_path, &st) == 0)
         {
