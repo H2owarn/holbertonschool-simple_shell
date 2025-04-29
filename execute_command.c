@@ -19,7 +19,7 @@ int handle_builtin_exit(char **args)
 		if (isatty(STDIN_FILENO))  /* Check if shell is interactive */
 		{
 			free_args(args);
-			exit(EXIT_SUCCESS);
+			exit(last_exit_status);
 		}
 		return (1); /* Exit command is handled */
 	}
@@ -78,33 +78,38 @@ int execute_fork(char *path, char **args)
 /**
  * execute_command - Execute a command in a new process
  * @args: Null-terminated array of arguments passed to the shell
-  */
+ **/
 void execute_command(char **args)
 {
-	static int last_status;  /* Store the last exit status */
-	char *path = NULL;
+    char *path = NULL;
 
-	if (!args || !args[0])
-		return;
-	/* Handle built-in command: exit */
-	if (handle_builtin_exit(args))
-		return;
-	/* Find command path */
-	path = get_command_path(args);
-	if (!path)
-	{
-		write(STDERR_FILENO, "./hsh: 1: ", 10);
-		write(STDERR_FILENO, args[0], _strlen(args[0]));
-		write(STDERR_FILENO, ": not found\n", 12);
-		last_status = 127;  /* Set last_status to indicate command not found */
-		if (!isatty(STDIN_FILENO))
-		{
-			free_args(args);
-			exit(last_status);  /* Exit with the appropriate status */
-		}
-		return;
-		}
-	    /* Fork and execute the command */
-	    last_status = execute_fork(path, args);
-	    free(path);
+    if (!args || !args[0])
+        return;
+
+    /* Handle built-in command: exit */
+    if (handle_builtin_exit(args))
+        return;
+
+    /* Find command path */
+    path = get_command_path(args);
+    if (!path)
+    {
+        write(STDERR_FILENO, "./hsh: 1: ", 10);
+        write(STDERR_FILENO, args[0], _strlen(args[0]));
+        write(STDERR_FILENO, ": not found\n", 12);
+        last_exit_status = 127;  /* <--- use global last_exit_status */
+        if (!isatty(STDIN_FILENO))
+        {
+            free_args(args);
+            exit(last_exit_status);
+        }
+        return;
+    }
+
+    /* Fork and execute the command */
+    execute_fork(path, args);
+
+    free(path);
 }
+
+
