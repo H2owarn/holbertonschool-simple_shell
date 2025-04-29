@@ -66,50 +66,30 @@ int execute_fork(char *path, char **args)
   */
 void execute_command(char **args)
 {
-    pid_t pid;
-    int status;
-    char *path = NULL;
+	static int last_status;  /* Store the last exit status */
+	char *path = NULL;
 
-    if (!args || !args[0])
-        return;
-
-    if (_strchr(args[0], '/'))
-        path = _strdup(args[0]);
-    else
-        path = find_path(args[0]);
-
-    if (!path)
-    {
-        write(STDERR_FILENO, "./hsh: 1: ", 10);
-        write(STDERR_FILENO, args[0], _strlen(args[0]));
-        write(STDERR_FILENO, ": not found\n", 12);
-
-        if (!isatty(STDIN_FILENO))
-        {
-            free_args(args);
-            exit(127);
-        }
-        return;
-    }
-
-    pid = fork();
-    if (pid == -1)
-    {
-        perror("fork");
-        free(path);
-        return;
-    }
-
-    if (pid == 0)
-    {
-        if (execve(path, args, environ) == -1)
-        {
-            perror(args[0]);
-            exit(EXIT_FAILURE);
-        }
-    }
-    else
-        waitpid(pid, &status, 0);
-
-    free(path);
+	if (!args || !args[0])
+		return;
+	/* Handle built-in command: exit */
+	if (handle_builtin_exit(args))
+		return;
+	/* Find command path */
+	path = get_command_path(args);
+	if (!path)
+	{
+		write(STDERR_FILENO, "./hsh: 1: ", 10);
+		write(STDERR_FILENO, args[0], _strlen(args[0]));
+		write(STDERR_FILENO, ": not found\n", 12);
+		last_status = 127;  /* Set last_status to indicate command not found */
+		if (!isatty(STDIN_FILENO))
+		{
+			free_args(args);
+			exit(last_status);  /* Exit with the appropriate status */
+		}
+		return;
+		}
+	    /* Fork and execute the command */
+	    last_status = execute_fork(path, args);
+	    free(path);
 }
