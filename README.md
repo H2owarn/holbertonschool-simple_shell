@@ -22,33 +22,8 @@ This project was created as part of the Holberton School curriculum.
 |---------|-------------------------|
 | `exit`  | Exit the shell with status |
 
-## How to Compile
+## Files
 
-```bash
-gcc -Wall -Werror -Wextra -pedantic *.c -o hsh
-
-## Usage
-
-- Interactive mode:
-
-./hsh
-($) ls -l
-($) exit
-
-
-- Non-interactive mode:
-
-echo "ls" | ./hsh
-
-
-## Example
-
-($) /bin/ls
-hsh main.c shell.c README.md
-($) exit
-
-
-Files
 main.c - Entry point for the shell
 
 execute_command.c - Execute user commands
@@ -60,6 +35,32 @@ handle_exit.c - Handle exit built-in
 utils.c - Helper functions (_strlen, _strdup, etc.)
 
 shell.h - Header file with function prototypes and struct definitions
+
+## How to Compile
+
+```bash
+gcc -Wall -Werror -Wextra -pedantic *.c -o hsh
+
+## Usage
+
+- Interactive mode:
+```bash
+./hsh
+($) ls -l
+($) exit
+
+
+- Non-interactive mode:
+```bash
+echo "ls" | ./hsh
+
+
+## Example
+
+($) /bin/ls
+hsh main.c shell.c README.md
+($) exit
+
 
 ## Authors
 Chutaphat Niampoung
