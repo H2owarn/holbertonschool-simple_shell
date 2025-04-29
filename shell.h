@@ -11,6 +11,7 @@
 
 /* Global environment */
 extern char **environ;
+extern int last_exit_status;
 /**
  * struct shell_ctx -  Represents the context/state
  * of the shell session.
