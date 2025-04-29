@@ -27,6 +27,8 @@ int _atoi(const char *s)
  * handle_exit - Handles the "exit" built-in command
  * @args: Command arguments
  */
+extern int last_exit_status;
+
 void handle_exit(char **args)
 {
     int exit_status;
