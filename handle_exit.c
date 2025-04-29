@@ -28,7 +28,6 @@ int _atoi(const char *s)
  * @args: Command arguments
  */
 extern int last_exit_status;
-int last_exit_status = 0;
 
 void handle_exit(char **args)
 {
