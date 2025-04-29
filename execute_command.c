@@ -37,12 +37,14 @@ int execute_fork(char *path, char **args)
 {
 	pid_t pid;
 	int status;
+	int exit_status = 0;
 
 	pid = fork();
 	if (pid == -1)
 	{
-		perror("fork");
-		return (-1);  /* Fork failed */
+		perror("Error:");
+		free(path);
+		return;
 	}
 
 	if (pid == 0)
@@ -55,9 +57,13 @@ int execute_fork(char *path, char **args)
 	}
 	else
 	{
-		waitpid(pid, &status, 0);
+		wait(&status);
+		if (WIFEXITED(status))
+			last_exit_status = WEXITSTATUS(status);
+		else
+			last_exit_status = 1;
 	}
-	return (status);
+	return (exit_status);
 }
 
 /**
