@@ -1,0 +1,40 @@
+.TH HSH 1 "April 2025" "Simple Shell" "User Commands"
+.SH NAME
+hsh \- simple UNIX command interpreter
+.SH SYNOPSIS
+.B hsh
+.SH DESCRIPTION
+.B hsh
+is a simple shell that reads commands from standard input and executes them.
+It implements basic features found in standard shells.
+
+The shell:
+- Executes commands with their full path, or resolves using the PATH variable.
+- Handles built-in commands: exit.
+- Supports command execution even when environment variables are missing.
+
+.SH BUILTINS
+The shell supports the following built-in commands:
+.TP
+.B exit [status]
+Exit the shell with an optional status code.
+
+.SH ENVIRONMENT
+The following environment variables affect the execution of hsh:
+.TP
+.B PATH
+Directories to search for executables.
+.TP
+.B SHLVL
+Shell level.
+
+.SH AUTHOR
+Chutaphat Niampoung
+Ying Tai
+
+.SH BUGS
+No known bugs.
+
+.SH COPYRIGHT
+This is a Holberton School project.
+
