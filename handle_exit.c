@@ -27,8 +27,6 @@ int _atoi(const char *s)
  * handle_exit - Handles the "exit" built-in command
  * @args: Command arguments
  */
-extern int last_exit_status;
-
 void handle_exit(char **args)
 {
     int exit_status;
@@ -43,10 +41,6 @@ void handle_exit(char **args)
             write(STDERR_FILENO, "\n", 1);
             return;
         }
-    }
-    else
-    {
-        exit_status = last_exit_status; /* <<< Use last command's exit */
     }
 
     free_args(args);
