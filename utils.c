@@ -35,44 +35,39 @@ char *get_path_env(void)
  */
 char *find_path(char *command)
 {
-	char *path_env, *path_copy, *dir;
-	char *full_path;
-	size_t full_len;
+    char *path_env = get_path_env();
+    char *token, *path_copy, *full_path;
+    struct stat st;
 
-	if (!command)
-		return (NULL);
-	/* Get PATH from the environment */
-	path_env = get_path_env();
-	if (!path_env)
-		return (NULL);
-	/* Make a copy because strtok modifies the string */
-	path_copy = strdup(path_env);
-	if (!path_copy)
-		return (NULL);
-	dir = strtok(path_copy, ":");
-	while (dir != NULL)
-	{/* Build full path string: dir + "/" + command + null */
-		full_len = strlen(dir) + 1 + strlen(command) + 1;
-		full_path = malloc(full_len);
-		if (!full_path)
-		{
-			free(path_copy);
-			return (NULL);
-		}
-	strcpy(full_path, dir);
-	strcat(full_path, "/");
-	strcat(full_path, command);
-	/* Check if this file exists and is executable */
-	if (access(full_path, X_OK) == 0)
-	{	free(path_copy);
-		return (full_path);
-	}
-	/* Otherwise try next directory */
-	free(full_path);
-	dir = strtok(NULL, ":");
-	} /* Not found */
-	free(path_copy);
-	return (NULL);
+    if (!path_env || path_env[0] == '\0')  // <--- ADD THIS CHECK
+        return NULL;
+
+    path_copy = _strdup(path_env);
+    token = strtok(path_copy, ":");
+    while (token)
+    {
+        full_path = malloc(_strlen(token) + _strlen(command) + 2);
+        if (!full_path)
+        {
+            free(path_copy);
+            return NULL;
+        }
+        _strcpy(full_path, token);
+        _strcat(full_path, "/");
+        _strcat(full_path, command);
+
+        if (stat(full_path, &st) == 0)
+        {
+            free(path_copy);
+            return full_path;
+        }
+
+        free(full_path);
+        token = strtok(NULL, ":");
+    }
+
+    free(path_copy);
+    return NULL;
 }
 /**
  * get_command_path - Find the full path of a command
