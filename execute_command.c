@@ -14,18 +14,13 @@
  */
 int handle_builtin_exit(char **args)
 {
-	if (_strcmp(args[0], "exit") == 0)
-	{
-		if (isatty(STDIN_FILENO))  /* Check if shell is interactive */
-		{
-			free_args(args);
-			exit(last_exit_status);
-		}
-		return (1); /* Exit command is handled */
-	}
-	return (0);  /* Command is not exit */
+    if (_strcmp(args[0], "exit") == 0)
+    {
+        free_args(args);
+        exit(last_exit_status);
+    }
+    return (0);
 }
-
 
 /**
  * execute_fork - Fork the process and execute a command
