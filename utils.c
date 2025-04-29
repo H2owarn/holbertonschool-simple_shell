@@ -72,7 +72,6 @@ char *find_path(char *command)
 	free(path_copy);
 	return (NULL);
 }
-
 /**
  * get_command_path - Find the full path of a command
  * @args: Null-terminated array of arguments passed to the shell
@@ -80,15 +79,31 @@ char *find_path(char *command)
 **/
 char *get_command_path(char **args)
 {
-	char *path = NULL;
+    char *path = NULL;
 
-	if (_strchr(args[0], '/'))
-	{
-		path = _strdup(args[0]);
-	}
-	else
-	{
-		path = find_path(args[0]);
-	}
-	return (path);
+    if (_strchr(args[0], '/'))
+    {
+        path = _strdup(args[0]);
+    }
+    else
+    {
+        path = find_path(args[0]);
+        if (!path)
+        {
+            /* PATH might be missing - manually check /bin/ and /usr/bin/ */
+            char *directories[] = {"/bin/", "/usr/bin/", NULL};
+            int i = 0;
+            char full_path[256];
+
+            while (directories[i])
+            {
+                snprintf(full_path, sizeof(full_path), "%s%s", directories[i], args[0]);
+                if (access(full_path, X_OK) == 0)
+                    return _strdup(full_path);
+                i++;
+            }
+        }
+    }
+
+    return path;
 }
