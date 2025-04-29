@@ -10,9 +10,11 @@
  * main - Entry point for the simple shell program
  *
  * Return: Always returns 0 on successful execution.
- * int last_exit_status = 0;
- * dcare this when run code
+ *
  */
+ 
+int last_exit_status = 0;
+
 int main(void)
 {
 	char *line = NULL;
