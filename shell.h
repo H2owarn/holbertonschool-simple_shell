@@ -11,7 +11,7 @@
 
 /* Global environment */
 extern char **environ;
-
+extern int last_exit_status;
 /**
  * struct shell_ctx -  Represents the context/state
  * of the shell session.
@@ -40,5 +40,6 @@ char *_strdup(const char *s);
 char *_strchr(const char *s, char c);
 int _strlen(const char *s);
 int _strcmp(const char *s1, const char *s2);
-
+int _atoi(const char *s);
+void handle_exit(char **args);
 #endif /* SHELL_H */

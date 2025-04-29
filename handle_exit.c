@@ -27,9 +27,12 @@ int _atoi(const char *s)
  * handle_exit - Handles the "exit" built-in command
  * @args: Command arguments
  */
+
+extern int last_exit_status; /* if you have it in a separate file */
+
 void handle_exit(char **args)
 {
-    int exit_status = 0;
+    int exit_status;
 
     if (args[1]) /* If there is an argument */
     {
@@ -42,8 +45,11 @@ void handle_exit(char **args)
             return;
         }
     }
+    else
+    {
+        exit_status = last_exit_status; /* <<< Use last command's exit */
+    }
 
     free_args(args);
     exit(exit_status);
 }
-
