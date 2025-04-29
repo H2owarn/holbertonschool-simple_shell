@@ -21,6 +21,26 @@ int handle_builtin_exit(char **args)
 	return (0);
 }
 /**
+ * handle_builtin_env - Handle the 'env' built-in command
+ * @args: Null-terminated array of arguments passed to the shell
+* Return: 1 if 'exit' command is executed, 0 otherwise
+ */
+int handle_builtin_env(char **args)
+{
+	int i;
+	if (_strcmp(args[0], "env") == 0)
+	{
+		for (i = 0; environ[i]; i++)
+		{
+			write(STDOUT_FILENO, environ[i], _strlen(environ[i]));
+			write(STDOUT_FILENO, "\n", 1);
+		}
+		last_exit_status = 0;
+		return (1);
+	}
+	return (0);
+}
+/**
  * execute_fork - Fork the process and execute a command
  * @path: Full path to the command to be executed
  * @args: Null-terminated array of arguments passed to the shell
@@ -76,6 +96,8 @@ void execute_command(char **args)
 	if (!args || !args[0])
 		return;
 	if (handle_builtin_exit(args))
+		return;
+	if (handle_builtin_env(args))
 		return;
 	path = get_command_path(args);
 	if (!path)
