@@ -39,9 +39,6 @@ char *find_path(char *command)
     char *token, *path_copy, *full_path;
     struct stat st;
 
-    if (!path_env || path_env[0] == '\0')
-        return (NULL);
-
     path_copy = _strdup(path_env);
     token = strtok(path_copy, ":");
     while (token)
@@ -82,7 +79,7 @@ char *get_command_path(char **args)
 		return (_strdup(args[0]));
 	path_env = get_path_env();
 	if (!path_env || path_env[0] == '\0')
-		path_env = "/bin:/usr/bin";
+		return (NULL);
 
 	path = find_path_custom(args[0], path_env);
 	return (path);
