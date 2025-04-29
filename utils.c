@@ -95,7 +95,7 @@ char *get_command_path(char **args)
 			char *directories[] = {"/bin/", "/usr/bin/", NULL};
 			int i = 0;
 			char full_path[256];
-			
+
 			while (directories[i])
 			{
 				snprintf(full_path, sizeof(full_path), "%s%s", directories[i], args[0]);
