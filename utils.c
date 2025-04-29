@@ -26,51 +26,63 @@ char *get_path_env(void)
 	return (NULL); /* PATH not found */
 }
 
+#include "shell.h"
+
 /**
- * find_path - Search for a command in directories listed
- * in the PATH environment variable
- * @command: The command name to search for.
- * Return: The full path of the executable,
- * NULL if the command is not found or is not executable.
+ * find_path - finds the full path of a command
+ * @command: the command to search
+ * Return: full path or NULL
  */
 char *find_path(char *command)
 {
-	char *path_env, *path_copy, *dir;
-	char *full_path;
-	size_t full_len;
+    char *path_env, *path_copy, *dir;
+    char *full_path;
+    int i;
+    struct stat st;
 
-	if (!command)
-		return (NULL);
-	/* Get PATH from the environment */
-	path_env = get_path_env();
-	if (!path_env)
-		return (NULL);
-	/* Make a copy because strtok modifies the string */
-	path_copy = strdup(path_env);
-	if (!path_copy)
-		return (NULL);
-	dir = strtok(path_copy, ":");
-	while (dir != NULL)
-	{/* Build full path string: dir + "/" + command + null */
-		full_len = strlen(dir) + 1 + strlen(command) + 1;
-		full_path = malloc(full_len);
-		if (!full_path)
-		{free(path_copy);
-		return (NULL);}
-	strcpy(full_path, dir);
-	strcat(full_path, "/");
-	strcat(full_path, command);
-	/* Check if this file exists and is executable */
-	if (access(full_path, X_OK) == 0)
-	{	free(path_copy);
-		return (full_path);
-	} /* SUCCESS: Return this path */
-	/* Otherwise try next directory */
-	free(full_path);
-	dir = strtok(NULL, ":");
-	} /* Not found */
-	free(path_copy);
-	return (NULL);
+    for (i = 0; environ[i]; i++)
+    {
+        if (_strncmp(environ[i], "PATH=", 5) == 0)
+        {
+            path_env = environ[i] + 5;
+            break;
+        }
+    }
+
+    if (!environ[i])
+        return NULL;
+
+    if (!path_env || *path_env == '\0')
+        return NULL;
+
+    path_copy = _strdup(path_env);
+    dir = _strtok(path_copy, ":");
+
+    while (dir)
+    {
+        full_path = malloc(_strlen(dir) + _strlen(command) + 2);
+        if (!full_path)
+        {
+            free(path_copy);
+            return NULL;
+        }
+
+        _strcpy(full_path, dir);
+        _strcat(full_path, "/");
+        _strcat(full_path, command);
+
+        if (stat(full_path, &st) == 0)
+        {
+            free(path_copy);
+            return full_path;
+        }
+
+        free(full_path);
+        dir = _strtok(NULL, ":");
+    }
+
+    free(path_copy);
+    return NULL;
 }
 
 /**
