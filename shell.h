@@ -43,4 +43,5 @@ int _strcmp(const char *s1, const char *s2);
 int _atoi(const char *s);
 void handle_exit(char **args);
 char *find_path_custom(char *command, char *path_env);
+char *_strcpy(char *dest, const char *src);
 #endif /* SHELL_H */

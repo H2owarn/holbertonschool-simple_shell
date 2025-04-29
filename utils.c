@@ -120,7 +120,7 @@ char *find_path_custom(char *command, char *path_env)
 			return (NULL);
 		}
 
-		_strcpy(full_path, dir);
+		strcpy(full_path, dir);
 		_strcat(full_path, "/");
 		_strcat(full_path, command);
 
