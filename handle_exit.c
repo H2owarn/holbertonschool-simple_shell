@@ -42,6 +42,10 @@ void handle_exit(char **args)
             return;
         }
     }
+    else
+    {
+	    exit_status = last_exit_status;
+    }
 
     free_args(args);
     exit(exit_status);
