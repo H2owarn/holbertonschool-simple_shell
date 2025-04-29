@@ -121,8 +121,8 @@ char *find_path_custom(char *command, char *path_env)
 		}
 
 		strcpy(full_path, dir);
-		_strcat(full_path, "/");
-		_strcat(full_path, command);
+		strcat(full_path, "/");
+		strcat(full_path, command);
 
 		if (stat(full_path, &st) == 0 && (st.st_mode & S_IXUSR))
 		{
