@@ -37,16 +37,15 @@ int execute_fork(char *path, char **args)
 {
     pid_t pid;
     int status;
-    int exit_status = 0;
 
     pid = fork();
     if (pid == -1)
     {
         perror("Error:");
         free(path);
-        return (1);
+        return -1;
     }
-    
+
     if (pid == 0)
     {
         if (execve(path, args, environ) == -1)
@@ -57,14 +56,23 @@ int execute_fork(char *path, char **args)
     }
     else
     {
-        wait(&status);
+        waitpid(pid, &status, 0);
+
         if (WIFEXITED(status))
-            exit_status = WEXITSTATUS(status);
+        {
+            last_exit_status = WEXITSTATUS(status);
+        }
+        else if (WIFSIGNALED(status))
+        {
+            last_exit_status = 128 + WTERMSIG(status);
+        }
         else
-            exit_status = 1;
+        {
+            last_exit_status = 1;
+        }
     }
 
-    return (exit_status);
+    return 0;
 }
 
 /**
